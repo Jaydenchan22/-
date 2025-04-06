@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>動物詳細資料 - 澳門培正生物資料庫</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="detail-page">
+    <header>
+        <a href="animals.html" class="back-button">返回動物列表</a>
+        <h1 id="page-title">動物詳細資料</h1>
+    </header>
+    <main>
+        <div class="detail-container">
+            <div class="basic-info">
+                <div class="main-image-container">
+                    <img id="animal-image" src="" alt="">
+                </div>
+                <div class="info-content">
+                    <h2 id="animal-title"></h2>
+                    <div class="info-item">
+                        <h3>學名</h3>
+                        <p id="scientific-name"></p>
+                    </div>
+                    <div class="info-item">
+                        <h3>科名</h3>
+                        <p id="family"></p>
+                    </div>
+                    <div class="info-item">
+                        <h3>描述</h3>
+                        <p id="description"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="detail-cards" id="detail-cards">
+                <!-- Detail cards will be loaded here -->
+            </div>
+        </div>
+    </main>
+    <script>
+        async function loadAnimalDetails() {
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                const animalName = urlParams.get('name');
+                
+                if (!animalName) {
+                    console.error('No animal name provided');
+                    return;
+                }
+
+                const response = await fetch('/data/animals/animals.json');
+                const animals = await response.json();
+                const animal = animals.find(a => a.name === animalName);
+
+                if (!animal) {
+                    console.error('Animal not found');
+                    return;
+                }
+
+                // Update basic information
+                document.title = `${animal.title} - ${animal.name} - 澳門培正生物資料庫`;
+                document.getElementById('page-title').textContent = `${animal.title} - ${animal.name}`;
+                document.getElementById('animal-image').src = animal.image;
+                document.getElementById('animal-image').alt = animal.name;
+                document.getElementById('scientific-name').textContent = animal.scientificName;
+                document.getElementById('family').textContent = animal.family;
+                document.getElementById('description').textContent = animal.description;
+
+                // Create detail cards
+                const detailCardsContainer = document.getElementById('detail-cards');
+                detailCardsContainer.innerHTML = '';
+
+                // Create buttons for c1, c2, etc.
+                for (let i = 1; i <= 10; i++) {
+                    const titleKey = `c${i}t`;
+                    const contentKey = `c${i}c`;
+                    const imageKey = `c${i}i`;
+
+                    if (animal[titleKey] && animal[contentKey]) {
+                        const button = document.createElement('a');
+                        button.className = 'info-button';
+                        button.href = `detail-template.html?type=animal&name=${encodeURIComponent(animal.name)}&card=${i}`;
+                        button.textContent = animal[titleKey];
+                        detailCardsContainer.appendChild(button);
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading animal details:', error);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadAnimalDetails);
+    </script>
+</body>
+</html> 

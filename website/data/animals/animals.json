@@ -1,0 +1,32 @@
+[
+    {
+        "name": "烏龜",
+        "title": "培正龜池的常客",
+        "scientificName": "Testudines",
+        "family": "龜科 Testudinidae",
+        "description": "烏龜是爬行動物，具有堅硬的外殼保護身體。",
+        "image": "images/turtle.jpg",
+        "c1t": "生態習性",
+        "c1c": "喜歡在水中游泳，但也會上岸曬太陽。冬天會進入冬眠狀態。",
+        "c1i": "images/turtle-habitat.jpg",
+        "c2t": "分布地區",
+        "c2c": "淡水區域，如池塘、湖泊和河流。",
+        "c2i": "images/turtle-habitat.jpg",
+        "c3t": "保護狀況",
+        "c3c": "部分品種因棲息地破壞和捕獵而受到威脅。"
+    },
+    {
+        "name": "麻雀",
+        "title": "校園常見鳥類",
+        "scientificName": "Passer montanus",
+        "family": "雀科 Passeridae",
+        "description": "麻雀是常見的小型鳥類，善於在都市環境中生存。",
+        "image": "images/OIP.jpg",
+        "c1t": "生態習性",
+        "c1c": "麻雀是群居性鳥類，常在建築物縫隙中築巢。主要以種子和昆蟲為食。",
+        "c1i": "images/sparrow-habitat.jpg",
+        "c2t": "分布地區",
+        "c2c": "廣泛分布於城市和鄉村地區，適應能力強。",
+        "c2i": "images/sparrow-distribution.jpg"
+    }
+]

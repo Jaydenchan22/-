@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>詳細資料 - 澳門培正生物資料庫</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="detail-page">
+    <header>
+        <a href="#" class="back-button" id="backButton">返回</a>
+        <h1 id="page-title">詳細資料</h1>
+    </header>
+    <main>
+        <div class="detail-container">
+            <div class="info-card" id="detail-card">
+                <!-- Card content will be loaded here -->
+            </div>
+        </div>
+    </main>
+    <script>
+        async function loadDetailContent() {
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                const type = urlParams.get('type');
+                const name = urlParams.get('name');
+                const card = urlParams.get('card');
+
+                if (!type || !name || !card) {
+                    console.error('Missing required parameters');
+                    return;
+                }
+
+                // Set back button link
+                const backButton = document.getElementById('backButton');
+                backButton.href = type === 'plant' ? `plantDetail.html?name=${encodeURIComponent(name)}` : `animalDetail.html?name=${encodeURIComponent(name)}`;
+
+                // Load data
+                const response = await fetch(`data/${type}s/${type}s.json`);
+                const items = await response.json();
+                const item = items.find(i => i.name === name);
+
+                if (!item) {
+                    console.error('Item not found');
+                    return;
+                }
+
+                // Get card data
+                const titleKey = `c${card}t`;
+                const contentKey = `c${card}c`;
+                const imageKey = `c${card}i`;
+
+                if (!item[titleKey] || !item[contentKey]) {
+                    console.error('Card data not found');
+                    return;
+                }
+
+                // Update page title
+                document.title = `${item[titleKey]} - ${item.name} - 澳門培正生物資料庫`;
+                document.getElementById('page-title').textContent = `${item[titleKey]} - ${item.name}`;
+
+                // Create card content
+                const cardContent = `
+                    <h2>${item[titleKey]}</h2>
+                    <div class="card-content">${item[contentKey].replace(/\n/g, '<br>')}</div>
+                `;
+
+                if (item[imageKey]) {
+                    const imageContent = `<img src="${item[imageKey]}" alt="${item[titleKey]}">`;
+                    document.getElementById('detail-card').innerHTML = imageContent + cardContent;
+                } else {
+                    document.getElementById('detail-card').innerHTML = cardContent;
+                }
+            } catch (error) {
+                console.error('Error loading detail content:', error);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadDetailContent);
+    </script>
+</body>
+</html> 

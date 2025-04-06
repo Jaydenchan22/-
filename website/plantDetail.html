@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>植物詳細資料 - 澳門培正生物資料庫</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="detail-page">
+    <header>
+        <a href="plants.html" class="back-button">返回植物列表</a>
+        <h1 id="page-title">植物詳細資料</h1>
+    </header>
+    <main>
+        <div class="detail-container">
+            <div class="basic-info">
+                <div class="main-image-container">
+                    <img id="plant-image" src="" alt="">
+                </div>
+                <div class="info-content">
+                    <h2 id="plant-title"></h2>
+                    <div class="info-item">
+                        <h3>學名</h3>
+                        <p id="scientific-name"></p>
+                    </div>
+                    <div class="info-item">
+                        <h3>科名</h3>
+                        <p id="family"></p>
+                    </div>
+                    <div class="info-item">
+                        <h3>描述</h3>
+                        <p id="description"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="detail-cards" id="detail-cards">
+                <!-- Detail cards will be loaded here -->
+            </div>
+        </div>
+    </main>
+    <script>
+        async function loadPlantDetails() {
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                const plantName = urlParams.get('name');
+                
+                if (!plantName) {
+                    console.error('No plant name provided');
+                    return;
+                }
+
+                const response = await fetch('/data/plants/plants.json');
+                const plants = await response.json();
+                const plant = plants.find(p => p.name === plantName);
+
+                if (!plant) {
+                    console.error('Plant not found');
+                    return;
+                }
+
+                // Update basic information
+                document.title = `${plant.title} - ${plant.name} - 澳門培正生物資料庫`;
+                document.getElementById('page-title').textContent = `${plant.title} - ${plant.name}`;
+                document.getElementById('plant-image').src = plant.image;
+                document.getElementById('plant-image').alt = plant.name;
+                document.getElementById('scientific-name').textContent = plant.scientificName;
+                document.getElementById('family').textContent = plant.family;
+                document.getElementById('description').textContent = plant.description;
+
+                // Create detail cards
+                const detailCardsContainer = document.getElementById('detail-cards');
+                detailCardsContainer.innerHTML = '';
+
+                // Create buttons for c1, c2, etc.
+                for (let i = 1; i <= 10; i++) {
+                    const titleKey = `c${i}t`;
+                    const contentKey = `c${i}c`;
+                    const imageKey = `c${i}i`;
+
+                    if (plant[titleKey] && plant[contentKey]) {
+                        const button = document.createElement('a');
+                        button.className = 'info-button';
+                        button.href = `detail-template.html?type=plant&name=${encodeURIComponent(plant.name)}&card=${i}`;
+                        button.textContent = plant[titleKey];
+                        detailCardsContainer.appendChild(button);
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading plant details:', error);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadPlantDetails);
+    </script>
+</body>
+</html> 
